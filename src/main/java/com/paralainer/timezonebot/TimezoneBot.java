@@ -35,7 +35,7 @@ public class TimezoneBot extends TelegramLongPollingBot {
                addTimezone(message);
             } else if (message.getText().startsWith("/rmtz")) {
                 removeTimezone(message);
-            } else if (message.getText().equals("/tztime")) {
+            } else if (message.getText().startsWith("/tztime")) {
                 sendTime(message);
             }
         }
