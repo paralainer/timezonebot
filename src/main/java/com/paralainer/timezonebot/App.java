@@ -3,11 +3,15 @@ package com.paralainer.timezonebot;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.TelegramBotsApi;
 
+import java.util.TimeZone;
+
 /**
  * Created by stalov on 02/05/2017.
  */
 public class App {
     public static void main(String[] args) {
+        TimeZone timeZone = TimeZone.getTimeZone("America/Vancouver");
+        System.out.println(timeZone.getID());
         ApiContextInitializer.init();
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
 

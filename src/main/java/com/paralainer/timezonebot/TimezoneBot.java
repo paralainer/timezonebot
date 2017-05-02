@@ -70,7 +70,7 @@ public class TimezoneBot extends TelegramLongPollingBot {
             chatTimezones.add(timeZone);
             sendText(message.getChatId(), "Timezone " + timezoneID + " added");
         } else {
-            sendText(message.getChatId(), "No such timezone found");
+            sendText(message.getChatId(), "No such timezone found " + timeZone.getID());
         }
     }
 
