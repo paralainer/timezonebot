@@ -52,7 +52,7 @@ public class TimezoneBot extends TelegramLongPollingBot {
         DateFormat df = new SimpleDateFormat("MMM dd, yyyy HH:mm");
         for (TimeZone timezone : timezones) {
             df.setTimeZone(timezone);
-            builder.append(df.format(currentDate)).append("\n");
+            builder.append(timezone.getDisplayName()).append(": ").append(df.format(currentDate)).append("\n");
         }
 
         sendText(message.getChatId(), builder.toString());
