@@ -17,35 +17,40 @@ import static com.mongodb.client.model.Filters.eq;
  */
 public class TimezoneService {
 
-    MongoCollection<Document> tzCollection;
+    private static final String CHAT_ID = "chatId";
+    private static final String TIMEZONES = "timezones";
+    private static final String TIMEZONE_ALIAS = "alias";
+    private static final String TIMEZONE_ID = "timezoneId";
+
+    private MongoCollection<Document> tzCollection;
 
     public TimezoneService(MongoCollection<Document> tzCollection) {
         this.tzCollection = tzCollection;
     }
 
     public Set<TimeZoneInfo> getTimezones(Long chatId) {
-        Document chatTz = tzCollection.find(eq("chatId", chatId)).first();
-        List<Document> timezones = (List<Document>) chatTz.get("timezones");
+        Document chatTz = tzCollection.find(eq(CHAT_ID, chatId)).first();
+        List<Document> timezones = (List<Document>) chatTz.get(TIMEZONES);
 
         Set<TimeZoneInfo> result = new HashSet<>();
 
         for (Document timezone : timezones) {
-            result.add(new TimeZoneInfo(timezone.getString("alias"), TimeZone.getTimeZone(timezone.getString("timezoneId"))));
+            result.add(new TimeZoneInfo(timezone.getString(TIMEZONE_ALIAS), TimeZone.getTimeZone(timezone.getString(TIMEZONE_ID))));
         }
 
         return result;
     }
 
     public void addTimezone(Long chatId, TimeZoneInfo timeZoneInfo) {
-        Document chatTz = tzCollection.find(eq("chatId", chatId)).first();
+        Document chatTz = tzCollection.find(eq(CHAT_ID, chatId)).first();
         if (chatTz == null) {
-            tzCollection.insertOne(new Document("chatId", chatId).append("timezones", new HashSet<Document>()));
+            tzCollection.insertOne(new Document(CHAT_ID, chatId).append(TIMEZONES, new HashSet<Document>()));
         }
 
-        tzCollection.updateOne(eq("chatId", chatId),
-                Updates.addToSet("timezones",
-                        new Document("alias", timeZoneInfo.getAlias())
-                                .append("timezoneId", timeZoneInfo.getTimeZone().getID())
+        tzCollection.updateOne(eq(CHAT_ID, chatId),
+                Updates.addToSet(TIMEZONES,
+                        new Document(TIMEZONE_ALIAS, timeZoneInfo.getAlias())
+                                .append(TIMEZONE_ID, timeZoneInfo.getTimeZone().getID())
                 )
         );
 

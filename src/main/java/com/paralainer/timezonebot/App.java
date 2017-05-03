@@ -33,7 +33,8 @@ public class App {
                     new TimezoneBot(
                             System.getenv("TELEGRAM_BOT_TOKEN"),
                             System.getenv("TELEGRAM_BOT_NAME"),
-                            new TimezoneService(chatTz)
+                            new TimezoneService(chatTz),
+                            new WeatherService(System.getenv("WEATHER_API_KEY"))
                     )
             );
 
