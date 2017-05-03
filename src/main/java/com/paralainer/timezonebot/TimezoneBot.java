@@ -1,5 +1,6 @@
 package com.paralainer.timezonebot;
 
+import com.mongodb.MongoClient;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.Update;
@@ -9,19 +10,22 @@ import org.telegram.telegrambots.exceptions.TelegramApiException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by stalov on 02/05/2017.
  */
 public class TimezoneBot extends TelegramLongPollingBot {
 
-    private Map<Long, Set<TimeZone>> timezones = new HashMap<>();
     private String botToken;
     private String botUsername;
+    private TimezoneService timezoneService;
 
-    public TimezoneBot(String botToken, String botUsername) {
+    public TimezoneBot(String botToken, String botUsername, TimezoneService timezoneService) {
         this.botToken = botToken;
         this.botUsername = botUsername;
+
+        this.timezoneService = timezoneService;
     }
 
     @Override
@@ -42,7 +46,7 @@ public class TimezoneBot extends TelegramLongPollingBot {
     }
 
     private void sendTime(Message message) {
-        Set<TimeZone> timezones = this.timezones.get(message.getChatId());
+        Set<TimeZoneInfo> timezones = this.timezoneService.getTimezones(message.getChatId());
         if (timezones == null){
             return;
         }
@@ -50,9 +54,9 @@ public class TimezoneBot extends TelegramLongPollingBot {
         StringBuilder builder = new StringBuilder();
         Date currentDate = new Date();
         DateFormat df = new SimpleDateFormat("MMM dd, yyyy HH:mm");
-        for (TimeZone timezone : timezones) {
-            df.setTimeZone(timezone);
-            builder.append(timezone.getID()).append(": ").append(df.format(currentDate)).append("\n");
+        for (TimeZoneInfo timezone : timezones) {
+            df.setTimeZone(timezone.getTimeZone());
+            builder.append(timezone.getAlias()).append(": ").append(df.format(currentDate)).append("\n");
         }
 
         sendText(message.getChatId(), builder.toString());
@@ -63,11 +67,16 @@ public class TimezoneBot extends TelegramLongPollingBot {
     }
 
     private void addTimezone(Message message) {
-        String timezoneID = message.getText().split(" ")[1].trim();
+        String[] parts = message.getText().split(" ");
+
+        if (parts.length < 3){
+            sendText(message.getChatId(), "Usage: /addtz <timezoneId> <alias>");
+        }
+        String timezoneID = parts[1].trim();
+        String alias = Arrays.stream(parts).skip(2).collect(Collectors.joining(" "));
         TimeZone timeZone = TimeZone.getTimeZone(timezoneID);
         if (timeZone.getID().equals(timezoneID)){
-            Set<TimeZone> chatTimezones = timezones.computeIfAbsent(message.getChatId(), k -> new HashSet<>());
-            chatTimezones.add(timeZone);
+            timezoneService.addTimezone(message.getChatId(), new TimeZoneInfo(alias, timeZone));
             sendText(message.getChatId(), "Timezone " + timezoneID + " added");
         } else {
             sendText(message.getChatId(), "No such timezone found " + timeZone.getID());
@@ -94,4 +103,5 @@ public class TimezoneBot extends TelegramLongPollingBot {
     public String getBotToken() {
         return botToken;
     }
+
 }
