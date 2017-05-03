@@ -22,7 +22,7 @@ public class WeatherService {
     String rain = "🌧";
     String snowflake = "❄️";
     String snowman = "☃️";
-    String atmosphere = "☀️";
+    String atmosphere = "🌫";
     String clearSky = "☀️";
     String fewClouds = "🌤";
     String clouds = "☁️";
