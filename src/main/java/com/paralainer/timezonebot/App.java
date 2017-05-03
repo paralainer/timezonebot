@@ -25,7 +25,7 @@ public class App {
 
         MongoClient mongoClient = new MongoClient(connectionString);
         MongoDatabase tzbot = mongoClient.getDatabase(System.getenv("MONGO_DB_NAME"));
-        MongoCollection<Document> chatTz = tzbot.getCollection("MONGO_TZ_COLLECTION");
+        MongoCollection<Document> chatTz = tzbot.getCollection(System.getenv("MONGO_TZ_COLLECTION"));
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
 
         try {
