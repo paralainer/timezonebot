@@ -51,8 +51,8 @@ public class WeatherService {
         }
 
         int temp = (int) result.getAsJsonObject("main").get("temp").getAsDouble();
-
-        return "\u2600 " + temp + "℃";
+        String weatherId = String.valueOf(result.getAsJsonArray("weather").get(0).getAsJsonObject().get("id").getAsInt());
+        return getEmoji(weatherId) + " " + temp + "℃";
     }
 
     private JsonObject callWs(String cityName) throws IOException {
