@@ -17,6 +17,18 @@ public class WeatherService {
 
     private String apiKey;
 
+    String thunderstorm = "🌩";
+    String drizzle = "🌧";
+    String rain = "🌧";
+    String snowflake = "❄️";
+    String snowman = "☃️";
+    String atmosphere = "☀️";
+    String clearSky = "☀️";
+    String fewClouds = "🌤";
+    String clouds = "☁️";
+    String hot = "☀️";
+    String defaultEmoji = "";
+
     public WeatherService(String apiKey) {
         this.apiKey = apiKey;
     }
@@ -34,11 +46,11 @@ public class WeatherService {
             e.printStackTrace();
         }
 
-        if (result == null){
+        if (result == null) {
             return "";
         }
 
-        int temp =  (int) result.getAsJsonObject("main").get("temp").getAsDouble();
+        int temp = (int) result.getAsJsonObject("main").get("temp").getAsDouble();
 
         return "\u2600 " + temp + "℃";
     }
@@ -50,5 +62,31 @@ public class WeatherService {
         HttpResponse response = client.execute(httpGet);
         JsonParser parser = new JsonParser();
         return parser.parse(new InputStreamReader(response.getEntity().getContent())).getAsJsonObject();
+    }
+
+    private String getEmoji(String weatherID) {
+        if (weatherID != null) {
+            if (weatherID.charAt(0) == '2' || weatherID.equals("900") || weatherID.equals("901") || weatherID.equals("902") || weatherID.equals("905"))
+                return thunderstorm;
+            else if (weatherID.charAt(0) == '3')
+                return drizzle;
+            else if (weatherID.charAt(0) == '5')
+                return rain;
+            else if (weatherID.charAt(0) == '6' || weatherID.equals("903") || weatherID.equals("906"))
+                return snowflake + ' ' + snowman;
+            else if (weatherID.charAt(0) == '7')
+                return atmosphere;
+            else if (weatherID.equals("800"))
+                return clearSky;
+            else if (weatherID.equals("801"))
+                return fewClouds;
+            else if (weatherID.equals("802") || weatherID.equals("803"))
+                return clouds;
+            else if (weatherID.equals("904"))
+                return hot;
+            else
+                return defaultEmoji;
+
+        } else return defaultEmoji;
     }
 }
