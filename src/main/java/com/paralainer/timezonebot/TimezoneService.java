@@ -58,7 +58,7 @@ public class TimezoneService {
     }
 
     public boolean removeTimezone(Long chatId, String timezoneAlias) {
-        UpdateResult updateResult = tzCollection.updateOne(eq(CHAT_ID, chatId), Updates.push(TIMEZONES, new Document(TIMEZONE_ALIAS, timezoneAlias)));
+        UpdateResult updateResult = tzCollection.updateOne(eq(CHAT_ID, chatId), Updates.pull(TIMEZONES, new Document(TIMEZONE_ALIAS, timezoneAlias)));
         return updateResult.getMatchedCount() > 0 && updateResult.getModifiedCount() > 0;
     }
 
