@@ -7,11 +7,13 @@ import java.util.TimeZone;
  */
 class TimeZoneInfo {
     private String alias;
+    private String weatherId;
     private TimeZone timeZone;
 
 
-    TimeZoneInfo(String alias, TimeZone timeZone) {
+    TimeZoneInfo(String alias, String weatherId, TimeZone timeZone) {
         this.alias = alias;
+        this.weatherId = weatherId;
         this.timeZone = timeZone;
     }
 
@@ -36,5 +38,9 @@ class TimeZoneInfo {
     @Override
     public int hashCode() {
         return alias.hashCode();
+    }
+
+    public String getWeatherId() {
+        return weatherId;
     }
 }

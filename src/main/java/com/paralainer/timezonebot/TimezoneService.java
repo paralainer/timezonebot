@@ -21,6 +21,7 @@ public class TimezoneService {
     private static final String TIMEZONES = "timezones";
     private static final String TIMEZONE_ALIAS = "alias";
     private static final String TIMEZONE_ID = "timezoneId";
+    private static final String WEATHER_ID = "weatherId";
 
     private MongoCollection<Document> tzCollection;
 
@@ -35,7 +36,7 @@ public class TimezoneService {
         Set<TimeZoneInfo> result = new HashSet<>();
 
         for (Document timezone : timezones) {
-            result.add(new TimeZoneInfo(timezone.getString(TIMEZONE_ALIAS), TimeZone.getTimeZone(timezone.getString(TIMEZONE_ID))));
+            result.add(new TimeZoneInfo(timezone.getString(TIMEZONE_ALIAS), timezone.getString(WEATHER_ID), TimeZone.getTimeZone(timezone.getString(TIMEZONE_ID))));
         }
 
         return result;
@@ -51,6 +52,7 @@ public class TimezoneService {
                 Updates.addToSet(TIMEZONES,
                         new Document(TIMEZONE_ALIAS, timeZoneInfo.getAlias())
                                 .append(TIMEZONE_ID, timeZoneInfo.getTimeZone().getID())
+                                .append(WEATHER_ID, timeZoneInfo.getWeatherId())
                 )
         );
 

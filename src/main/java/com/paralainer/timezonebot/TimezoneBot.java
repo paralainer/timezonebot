@@ -8,10 +8,7 @@ import org.telegram.telegrambots.exceptions.TelegramApiException;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Set;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -60,7 +57,7 @@ public class TimezoneBot extends TelegramLongPollingBot {
         DateFormat df = new SimpleDateFormat("MMM dd, yyyy HH:mm");
         for (TimeZoneInfo timezone : timezones) {
             df.setTimeZone(timezone.getTimeZone());
-            String weather = weatherService.getWeather(timezone.getTimeZone().getID(), timezone.getAlias());
+            String weather = weatherService.getWeather(timezone.getWeatherId(), timezone.getTimeZone().getID(), timezone.getAlias());
             builder.append(timezone.getAlias())
                     .append(": ")
                     .append(df.format(currentDate))
@@ -77,20 +74,34 @@ public class TimezoneBot extends TelegramLongPollingBot {
     }
 
     private void addTimezone(Message message) {
-        String[] parts = message.getText().split(" ");
+        String[] parts = message.getText().split(" +");
 
-        if (parts.length < 3) {
-            sendText(message.getChatId(), "Usage: /addtz <timezoneId> <alias>");
+        if (parts.length < 4) {
+            sendText(message.getChatId(), "Usage: /addtz <timezoneId> <weatherId> <alias>");
         }
         String timezoneID = parts[1].trim();
-        String alias = Arrays.stream(parts).skip(2).collect(Collectors.joining(" "));
-        TimeZone timeZone = TimeZone.getTimeZone(timezoneID);
-        if (timeZone.getID().equals(timezoneID)) {
-            timezoneService.addTimezone(message.getChatId(), new TimeZoneInfo(alias, timeZone));
-            sendText(message.getChatId(), "Timezone " + timezoneID + " added");
-        } else {
-            sendText(message.getChatId(), "No such timezone found " + timeZone.getID());
+        String weatherId = parts[2].trim();
+        String alias = Arrays.stream(parts).skip(3).collect(Collectors.joining(" "));
+
+        List<String> foundTimezones = Arrays.stream(TimeZone.getAvailableIDs()).filter(id -> id.contains("/"))
+                .filter(id -> id.matches(".*[0-9]+"))
+                .filter(id -> id.contains(timezoneID)).collect(Collectors.toList());
+
+        if (foundTimezones.isEmpty()) {
+            sendText(message.getChatId(), "No timezone found by query: " + timezoneID);
+            return;
         }
+
+        if (foundTimezones.size() != 1) {
+            sendText(message.getChatId(),
+                    "Found several timezones by this query, please specify request, found timezones: \n" +
+                            String.join("\n", foundTimezones));
+            return;
+        }
+
+        TimeZone timeZone = TimeZone.getTimeZone(foundTimezones.get(0));
+        timezoneService.addTimezone(message.getChatId(), new TimeZoneInfo(alias, weatherId, timeZone));
+        sendText(message.getChatId(), "Timezone " + timezoneID + " added");
     }
 
     private void sendText(Long chatId, String text) {

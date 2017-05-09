@@ -35,11 +35,13 @@ public class WeatherService {
         this.apiKey = apiKey;
     }
 
-    public String getWeather(String timezoneId, String alias) {
+    public String getWeather(String weatherId, String timezoneId, String alias) {
         String[] split = timezoneId.split("/");
         JsonObject result = null;
         try {
-            if (split.length == 2) {
+            if (weatherId != null) {
+                result = callWs(weatherId);
+            } else if (split.length == 2) {
                 result = callWs(split[1]);
             } else {
                 result = callWs(alias);
