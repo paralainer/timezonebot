@@ -1,5 +1,7 @@
 package com.paralainer.timezonebot;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.apache.http.HttpResponse;
@@ -51,8 +53,12 @@ public class WeatherService {
         }
 
         int temp = (int) result.getAsJsonObject("main").get("temp").getAsDouble();
-        String weatherId = String.valueOf(result.getAsJsonArray("weather").get(0).getAsJsonObject().get("id").getAsInt());
-        return getEmoji(weatherId) + " " + temp + "℃";
+        JsonArray weathers = result.getAsJsonArray("weather");
+        StringBuilder builder = new StringBuilder();
+        for (JsonElement weather : weathers) {
+            builder.append(getEmoji(String.valueOf(weather.getAsJsonObject().get("id").getAsInt())));
+        }
+        return builder.toString() + " " + temp + "℃";
     }
 
     private JsonObject callWs(String cityName) throws IOException {
