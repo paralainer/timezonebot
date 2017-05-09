@@ -83,8 +83,9 @@ public class TimezoneBot extends TelegramLongPollingBot {
         String weatherId = parts[2].trim();
         String alias = Arrays.stream(parts).skip(3).collect(Collectors.joining(" "));
 
-        List<String> foundTimezones = Arrays.stream(TimeZone.getAvailableIDs()).filter(id -> id.contains("/"))
-                .filter(id -> id.matches(".*[0-9]+"))
+        List<String> foundTimezones = Arrays.stream(TimeZone.getAvailableIDs())
+                .filter(id -> id.contains("/"))
+                .filter(id -> !id.matches(".*[0-9]+"))
                 .filter(id -> id.contains(timezoneID)).collect(Collectors.toList());
 
         if (foundTimezones.isEmpty()) {
