@@ -4,11 +4,9 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Updates;
 import org.bson.Document;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.TimeZone;
+import java.util.*;
 
+import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 
 
@@ -58,8 +56,29 @@ public class TimezoneService {
 
     }
 
-    public boolean removeTimezone(Long chatId, String timezoneIdOrAlias) {
-        return true;
+    public boolean removeTimezone(Long chatId, String timezoneAlias) {
+        Document chatTz = tzCollection.find(eq(CHAT_ID, chatId)).first();
+        if (chatId == null) {
+            return false;
+        }
+
+        Collection<Document> timezones = (Collection<Document>) chatTz.get(TIMEZONES);
+
+        Set<Document> result = new HashSet<>();
+        boolean found = false;
+        for (Document timezone : timezones) {
+            if (timezone.getString(TIMEZONE_ALIAS).equals(timezoneAlias)) {
+                found = true;
+            } else {
+                result.add(timezone);
+            }
+        }
+
+        if (found) {
+            tzCollection.updateOne(eq(CHAT_ID, chatId), Updates.pull(TIMEZONES, result));
+            return true;
+        }
+        return false;
     }
 
 

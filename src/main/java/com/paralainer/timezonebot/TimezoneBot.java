@@ -70,7 +70,17 @@ public class TimezoneBot extends TelegramLongPollingBot {
     }
 
     private void removeTimezone(Message message) {
-
+        String[] parts = message.getText().trim().split(" ");
+        if (parts.length < 2){
+            sendText(message.getChatId(), "Usage: /rmtz <alias>");
+        }
+        String alias = Arrays.stream(parts).skip(1).collect(Collectors.joining(" "));
+        boolean found = timezoneService.removeTimezone(message.getChatId(), alias);
+        if (found){
+            sendText(message.getChatId(), "Deleted");
+        } else {
+            sendText(message.getChatId(), "No tz found with alias: " + alias);
+        }
     }
 
     private void addTimezone(Message message) {
