@@ -20,7 +20,7 @@ public class WeatherService {
     private String apiKey;
 
     String thunderstorm = "🌩";
-    String drizzle = "🌧";
+    String drizzle = "\uD83C\uDF02";
     String rain = "🌧";
     String snowflake = "❄️";
     String snowman = "☃️";
