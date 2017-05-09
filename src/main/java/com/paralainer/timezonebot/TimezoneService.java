@@ -2,6 +2,7 @@ package com.paralainer.timezonebot;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 
 import java.util.*;
@@ -57,28 +58,8 @@ public class TimezoneService {
     }
 
     public boolean removeTimezone(Long chatId, String timezoneAlias) {
-        Document chatTz = tzCollection.find(eq(CHAT_ID, chatId)).first();
-        if (chatId == null) {
-            return false;
-        }
-
-        Collection<Document> timezones = (Collection<Document>) chatTz.get(TIMEZONES);
-
-        Set<Document> result = new HashSet<>();
-        boolean found = false;
-        for (Document timezone : timezones) {
-            if (timezone.getString(TIMEZONE_ALIAS).equals(timezoneAlias)) {
-                found = true;
-            } else {
-                result.add(timezone);
-            }
-        }
-
-        if (found) {
-            tzCollection.updateOne(eq(CHAT_ID, chatId), Updates.pull(TIMEZONES, result));
-            return true;
-        }
-        return false;
+        UpdateResult updateResult = tzCollection.updateOne(eq(CHAT_ID, chatId), Updates.pullByFilter(eq(TIMEZONES + "." + TIMEZONE_ALIAS, timezoneAlias)));
+        return updateResult.getMatchedCount() > 0 && updateResult.getModifiedCount() > 0;
     }
 
 
