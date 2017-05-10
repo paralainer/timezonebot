@@ -19,7 +19,7 @@ public class CachedWeatherService implements WeatherService {
     public CachedWeatherService(WeatherService service) {
         this.service = service;
 
-        cache = CacheBuilder.newBuilder().expireAfterWrite(10, TimeUnit.MINUTES).build(new CacheLoader<String, String>() {
+        cache = CacheBuilder.newBuilder().expireAfterWrite(30, TimeUnit.MINUTES).build(new CacheLoader<String, String>() {
             @Override
             public String load(String s) throws Exception {
                 return service.getWeather(s);
@@ -30,11 +30,7 @@ public class CachedWeatherService implements WeatherService {
     @Override
     public String getWeather(String locationName) {
         try {
-            String result = cache.get(locationName);
-            if (result.isEmpty()){
-                cache.refresh(locationName);
-            }
-            return  cache.get(locationName);
+            return cache.get(locationName);
         } catch (ExecutionException e) {
             e.printStackTrace();
             return "";

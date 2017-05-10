@@ -69,25 +69,28 @@ public class YahooApiWeatherService implements WeatherService {
     }
 
     @Override
-    public synchronized String getWeather(String locationName) {
+    public String getWeather(String locationName) {
         try {
             YahooWeatherService service = new YahooWeatherService();
-            List<Channel> weather = service.getForecastForLocation(locationName, DegreeUnit.CELSIUS).first(1);
-            StringBuilder builder = new StringBuilder();
-            for (Channel channel : weather) {
-                Condition currentWeather = channel.getItem().getCondition();
-                int code = currentWeather.getCode();
-                int temp = currentWeather.getTemp();
-                builder.append(" ")
-                        .append(getEmoji(code))
-                        .append(" ")
-                        .append(temp)
-                        .append("℃");
+            while (true) {
+                List<Channel> weather = service.getForecastForLocation(locationName, DegreeUnit.CELSIUS).first(1);
+                StringBuilder builder = new StringBuilder();
+                for (Channel channel : weather) {
+                    Condition currentWeather = channel.getItem().getCondition();
+                    int code = currentWeather.getCode();
+                    int temp = currentWeather.getTemp();
+                    builder.append(" ")
+                            .append(getEmoji(code))
+                            .append(" ")
+                            .append(temp)
+                            .append("℃");
+                }
+                if (!weather.isEmpty()) {
+                    return builder.toString();
+                } else {
+                    Thread.sleep(1000);
+                }
             }
-
-            Thread.sleep(1000); //reduce requests to server
-
-            return builder.toString();
         } catch (Exception e) {
             e.printStackTrace(System.out);
             return "";
