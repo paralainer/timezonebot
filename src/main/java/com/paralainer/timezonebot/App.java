@@ -34,7 +34,7 @@ public class App {
                             System.getenv("TELEGRAM_BOT_TOKEN"),
                             System.getenv("TELEGRAM_BOT_NAME"),
                             new TimezoneService(chatTz),
-                            new YahooApiWeatherService()
+                            new CachedWeatherService(new YahooApiWeatherService())
                     )
             );
 

@@ -69,10 +69,10 @@ public class YahooApiWeatherService implements WeatherService {
     }
 
     @Override
-    public String getWeather(String locationName) {
+    public synchronized String getWeather(String locationName) {
         try {
             YahooWeatherService service = new YahooWeatherService();
-            List<Channel> weather = service.getForecastForLocation(locationName, DegreeUnit.CELSIUS).first(3);
+            List<Channel> weather = service.getForecastForLocation(locationName, DegreeUnit.CELSIUS).first(1);
             StringBuilder builder = new StringBuilder();
             for (Channel channel : weather) {
                 Condition currentWeather = channel.getItem().getCondition();
@@ -84,6 +84,8 @@ public class YahooApiWeatherService implements WeatherService {
                         .append(temp)
                         .append("℃");
             }
+
+            Thread.sleep(1000); //reduce requests to server
 
             return builder.toString();
         } catch (Exception e) {
