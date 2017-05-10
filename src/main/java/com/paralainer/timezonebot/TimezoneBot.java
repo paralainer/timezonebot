@@ -61,7 +61,6 @@ public class TimezoneBot extends TelegramLongPollingBot {
             builder.append(timezone.getAlias())
                     .append(": ")
                     .append(df.format(currentDate))
-                    .append(" ")
                     .append(weather)
                     .append("\n");
         }
