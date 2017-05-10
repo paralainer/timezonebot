@@ -41,7 +41,7 @@ public class OpenWeatherService implements WeatherService {
         try {
             result = callWs(locationName);
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
         }
 
         if (result == null) {

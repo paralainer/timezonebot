@@ -121,7 +121,7 @@ public class TimezoneBot extends TelegramLongPollingBot {
         try {
             sendMessage(sendMessage);
         } catch (TelegramApiException e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
         }
     }
 

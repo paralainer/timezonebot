@@ -40,7 +40,7 @@ public class App {
 
             System.out.println("Bot is running");
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
         }
     }
 }

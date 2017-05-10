@@ -87,7 +87,7 @@ public class YahooApiWeatherService implements WeatherService {
 
             return builder.toString();
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
             return "";
         }
     }
