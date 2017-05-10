@@ -72,7 +72,7 @@ public class YahooApiWeatherService implements WeatherService {
     public String getWeather(String locationName) {
         try {
             YahooWeatherService service = new YahooWeatherService();
-            while (true) {
+            for(int i = 0; i < 10; i++){
                 List<Channel> weather = service.getForecastForLocation(locationName, DegreeUnit.CELSIUS).first(1);
                 StringBuilder builder = new StringBuilder();
                 for (Channel channel : weather) {
@@ -91,6 +91,8 @@ public class YahooApiWeatherService implements WeatherService {
                     Thread.sleep(1000);
                 }
             }
+
+            throw new Exception("Can't get weather after 10 attempts");
         } catch (Exception e) {
             e.printStackTrace(System.out);
             return "";
