@@ -72,7 +72,7 @@ public class YahooApiWeatherService implements WeatherService {
     public String getWeather(String locationName) {
         try {
             YahooWeatherService service = new YahooWeatherService();
-            List<Channel> weather = service.getForecastForLocation(locationName, DegreeUnit.CELSIUS).first(1);
+            List<Channel> weather = service.getForecastForLocation(locationName, DegreeUnit.CELSIUS).first(3);
             StringBuilder builder = new StringBuilder();
             for (Channel channel : weather) {
                 Condition currentWeather = channel.getItem().getCondition();
