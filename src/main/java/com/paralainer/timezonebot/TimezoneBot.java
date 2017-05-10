@@ -57,7 +57,7 @@ public class TimezoneBot extends TelegramLongPollingBot {
         DateFormat df = new SimpleDateFormat("MMM dd, yyyy HH:mm");
         for (TimeZoneInfo timezone : timezones) {
             df.setTimeZone(timezone.getTimeZone());
-            String weather = weatherService.getWeather(timezone.getWeatherId(), timezone.getTimeZone().getID(), timezone.getAlias());
+            String weather = weatherService.getWeather(timezone.getWeatherId());
             builder.append(timezone.getAlias())
                     .append(": ")
                     .append(df.format(currentDate))
