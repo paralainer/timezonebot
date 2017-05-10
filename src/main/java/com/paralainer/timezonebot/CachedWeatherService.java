@@ -15,7 +15,7 @@ public class CachedWeatherService implements WeatherService {
     private LoadingCache<String, String> cache;
 
     public CachedWeatherService(WeatherService service) {
-        cache = CacheBuilder.newBuilder().build(new CacheLoader<String, String>() {
+        cache = CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.DAYS).build(new CacheLoader<String, String>() {
             @Override
             public String load(String s) throws Exception {
                 return service.getWeather(s);
