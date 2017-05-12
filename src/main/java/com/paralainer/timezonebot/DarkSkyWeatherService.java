@@ -17,7 +17,7 @@ public class DarkSkyWeatherService implements WeatherService {
     private static final Map<String, String> EMOJI_MAPPING = new HashMap<>();
 
     static {
-        EMOJI_MAPPING.put("clear-day", "");
+        EMOJI_MAPPING.put("clear-day", "☀");
         EMOJI_MAPPING.put("clear-night", "☀");
         EMOJI_MAPPING.put("rain", "\uD83C\uDF27");
         EMOJI_MAPPING.put("snow", "❄️ ☃");

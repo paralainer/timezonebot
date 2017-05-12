@@ -67,10 +67,12 @@ public class TimezoneBot extends TelegramLongPollingBot {
     }
 
     private void sendTime(Message message) {
-        List<LocationInfo> locations = this.timezoneService.getLocations(message.getChatId()).stream().sorted(Comparator.comparing(LocationInfo::getAlias)).collect(Collectors.toList());
-        if (locations == null) {
+        Set<LocationInfo> locationsSet = this.timezoneService.getLocations(message.getChatId());
+        if (locationsSet == null) {
             return;
         }
+
+        List<LocationInfo> locations = locationsSet.stream().sorted(Comparator.comparing(LocationInfo::getAlias)).collect(Collectors.toList());
 
         StringBuilder builder = new StringBuilder();
         Date currentDate = new Date();
