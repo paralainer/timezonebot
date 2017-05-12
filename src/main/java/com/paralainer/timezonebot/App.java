@@ -15,8 +15,6 @@ import java.util.TimeZone;
  */
 public class App {
     public static void main(String[] args) {
-        TimeZone timeZone = TimeZone.getTimeZone("America/Vancouver");
-        System.out.println(timeZone.getID());
         ApiContextInitializer.init();
 
         MongoClientURI connectionString = new MongoClientURI(
@@ -33,8 +31,8 @@ public class App {
                     new TimezoneBot(
                             System.getenv("TELEGRAM_BOT_TOKEN"),
                             System.getenv("TELEGRAM_BOT_NAME"),
-                            new TimezoneService(chatTz),
-                            new CachedWeatherService(new YahooApiWeatherService())
+                            new LocationService(chatTz),
+                            new CachedWeatherService(new DarkSkyWeatherService(System.getenv("WEATHER_API_KEY")))
                     )
             );
 

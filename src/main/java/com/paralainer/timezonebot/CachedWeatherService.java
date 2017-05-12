@@ -5,40 +5,30 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Created by stalov on 10/05/2017.
  */
 public class CachedWeatherService implements WeatherService {
-    private LoadingCache<String, String> cache;
+    private LoadingCache<String, WeatherInfo> cache;
 
     public CachedWeatherService(WeatherService service) {
-        cache = CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.DAYS).build(new CacheLoader<String, String>() {
+        cache = CacheBuilder.newBuilder().expireAfterWrite(15, TimeUnit.MINUTES).build(new CacheLoader<String, WeatherInfo>() {
             @Override
-            public String load(String s) throws Exception {
+            public WeatherInfo load(String s) throws Exception {
                 return service.getWeather(s);
             }
         });
-
-        Executors.newSingleThreadScheduledExecutor()
-                .scheduleWithFixedDelay(() ->
-                                cache.asMap()
-                                        .keySet()
-                                        .parallelStream()
-                                        .forEach((key) -> cache.refresh(key)),
-                        0,
-                        30, TimeUnit.MINUTES);
     }
 
     @Override
-    public String getWeather(String locationName) {
+    public WeatherInfo getWeather(String locationName) {
         try {
             return cache.get(locationName);
         } catch (ExecutionException e) {
             e.printStackTrace();
-            return "";
+            return null;
         }
     }
 }
