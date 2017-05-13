@@ -18,15 +18,15 @@ public class DarkSkyWeatherService implements WeatherService {
 
     static {
         EMOJI_MAPPING.put("clear-day", "☀");
-        EMOJI_MAPPING.put("clear-night", "☀");
+        EMOJI_MAPPING.put("clear-night", "🌛");
         EMOJI_MAPPING.put("rain", "\uD83C\uDF27");
         EMOJI_MAPPING.put("snow", "❄️ ☃");
         EMOJI_MAPPING.put("sleet", "\uD83C\uDF27 \uD83C\uDF28");
         EMOJI_MAPPING.put("wind", "\uD83D\uDCA8");
         EMOJI_MAPPING.put("fog", "\uD83C\uDF2B");
         EMOJI_MAPPING.put("cloudy", "☁️");
-        EMOJI_MAPPING.put("partly-cloudy-day", "⛅");
-        EMOJI_MAPPING.put("partly-cloudy-night", "⛅");
+        EMOJI_MAPPING.put("partly-cloudy-day", "🌤");
+        EMOJI_MAPPING.put("partly-cloudy-night", "☁️🌛");
         EMOJI_MAPPING.put("hail", "\uD83C\uDF27");
         EMOJI_MAPPING.put("thunderstorm", "⛈");
         EMOJI_MAPPING.put("tornado", "\uD83C\uDF2A");
